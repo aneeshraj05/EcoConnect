@@ -1,0 +1,106 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Represents a user's profile information.",
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "description": "The user's display name."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        },
+        "photoURL": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the user's profile picture."
+        }
+      },
+      "required": ["displayName", "email"]
+    },
+    "Place": {
+      "title": "Place",
+      "description": "Represents a tourist attraction or place of interest.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "rating": { "type": "number" },
+        "category": { "type": "string" },
+        "imageId": { "type": "string" }
+      },
+      "required": ["name", "description", "category", "imageId"]
+    },
+    "Experience": {
+      "title": "Experience",
+      "description": "Represents a local experience or activity.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "rating": { "type": "number" },
+        "price": { "type": "number" },
+        "category": { "type": "string", "enum": ["Experience"] },
+        "imageId": { "type": "string" }
+      },
+      "required": ["name", "description", "price", "category", "imageId"]
+    },
+    "Stay": {
+        "title": "Stay",
+        "description": "Represents an accommodation.",
+        "type": "object",
+        "properties": {
+            "name": { "type": "string" },
+            "description": { "type": "string" },
+            "rating": { "type": "number" },
+            "price": { "type": "number" },
+            "category": { "type": "string", "enum": ["Stay"] },
+            "imageId": { "type": "string" }
+        },
+        "required": ["name", "description", "price", "category", "imageId"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "Represents a user's booking for a stay or experience.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "itemId": { "type": "string" },
+        "itemType": { "type": "string", "enum": ["Stay", "Experience"] },
+        "date": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["Confirmed", "Pending", "Cancelled"] },
+        "amount": { "type": "number" }
+      },
+      "required": ["userId", "itemId", "itemType", "date", "status", "amount"]
+    }
+  },
+  "auth": {
+    "providers": ["email", "google.com"]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Stores public profile information for each user."
+    },
+    "/places": {
+        "schema": { "$ref": "#/entities/Place" },
+        "description": "Collection of all tourist attractions."
+    },
+    "/experiences": {
+        "schema": { "$ref": "#/entities/Experience" },
+        "description": "Collection of all local experiences."
+    },
+    "/stays": {
+        "schema": { "$ref": "#/entities/Stay" },
+        "description": "Collection of all accommodations."
+    },
+    "/users/{userId}/bookings": {
+        "schema": { "$ref": "#/entities/Booking" },
+        "description": "Sub-collection of bookings for each user."
+    }
+  }
+}

@@ -8,8 +8,11 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Menu, Mountain } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 import { ThemeToggle } from "../theme-toggle";
+import { useUser, useAuth } from "@/firebase";
+import { signOut } from "firebase/auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const mainNav = [
   { title: "Explore", href: "/explore" },
@@ -17,7 +20,60 @@ const mainNav = [
   { title: "Trip Planner", href: "/trip-planner" },
 ];
 
+
+function UserNavButtons() {
+    const { user, isLoading } = useUser();
+    const auth = useAuth();
+  
+    const handleSignOut = async () => {
+        if(auth) {
+            await signOut(auth);
+        }
+    };
+  
+    if (isLoading) {
+      return <div className="h-9 w-24 rounded-md animate-pulse bg-muted" />;
+    }
+  
+    if (user) {
+      return (
+        <div className="flex items-center gap-2">
+            <Button variant="ghost" asChild>
+                <Link href="/dashboard">Dashboard</Link>
+            </Button>
+            <Avatar className="h-9 w-9">
+                {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />}
+                <AvatarFallback>{user.displayName?.charAt(0) || user.email?.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <Button variant="ghost" size="icon" onClick={handleSignOut} aria-label="Sign out">
+                <LogOut className="h-5 w-5" />
+            </Button>
+        </div>
+      );
+    }
+  
+    return (
+      <div className="flex gap-2">
+        <Button variant="ghost" asChild>
+          <Link href="/login">Login</Link>
+        </Button>
+        <Button asChild>
+          <Link href="/signup">Sign Up</Link>
+        </Button>
+      </div>
+    );
+  }
+
 export default function Header() {
+    const { user } = useUser();
+    const auth = useAuth();
+
+    const handleSignOut = async () => {
+        if(auth) {
+            await signOut(auth);
+        }
+    };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
@@ -41,13 +97,8 @@ export default function Header() {
           ))}
         </nav>
         <div className="flex flex-1 items-center justify-end gap-2">
-          <div className="hidden md:flex gap-2">
-            <Button variant="ghost" asChild>
-              <Link href="/login">Login</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/signup">Sign Up</Link>
-            </Button>
+          <div className="hidden md:flex">
+            <UserNavButtons />
           </div>
           <ThemeToggle />
           <Sheet>
@@ -73,14 +124,27 @@ export default function Header() {
                       {item.title}
                     </Link>
                   ))}
+                   {user && (
+                    <Link href="/dashboard" className="text-lg font-medium hover:text-primary">
+                        Dashboard
+                    </Link>
+                   )}
                 </div>
                 <div className="flex flex-col space-y-2 mt-8">
-                  <Button variant="outline" asChild>
-                    <Link href="/login">Login</Link>
-                  </Button>
-                  <Button asChild>
-                    <Link href="/signup">Sign Up</Link>
-                  </Button>
+                {!user ? (
+                    <>
+                      <Button variant="outline" asChild>
+                        <Link href="/login">Login</Link>
+                      </Button>
+                      <Button asChild>
+                        <Link href="/signup">Sign Up</Link>
+                      </Button>
+                    </>
+                  ) : (
+                     <Button variant="outline" onClick={handleSignOut}>
+                        Sign Out
+                      </Button>
+                  )}
                 </div>
               </div>
             </SheetContent>

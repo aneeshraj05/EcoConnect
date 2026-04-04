@@ -1,0 +1,39 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // USERS
+    // Anyone can read a user's public profile.
+    // Only the user themselves can create or update their own profile.
+    match /users/{userId} {
+      allow read;
+      allow create, update: if isSignedIn() && isOwner(userId);
+    }
+
+    // PLACES, EXPERIENCES, STAYS
+    // Anyone can read places, experiences, and stays.
+    // (Writes would be restricted to admins in a real app)
+    match /{collection}/{docId} where collection in ['places', 'experiences', 'stays'] {
+      allow read;
+      allow write: if false; // Block client-side writes for now
+    }
+    
+    // BOOKINGS
+    // Users can create bookings for themselves.
+    // Users can read, update, or delete their own bookings.
+    match /users/{userId}/bookings/{bookingId} {
+      allow read, update, delete: if isSignedIn() && isOwner(userId);
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.userId == userId;
+    }
+  }
+}

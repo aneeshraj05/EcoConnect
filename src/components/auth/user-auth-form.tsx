@@ -1,10 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -12,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { Icons } from "../icons";
+import { useAuth } from "@/firebase";
 
 const userAuthSchema = z.object({
   email: z.string().email(),
@@ -30,18 +37,61 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isGoogleLoading, setIsGoogleLoading] = React.useState<boolean>(false);
-  const searchParams = useSearchParams();
+  
+  const auth = useAuth();
+  const router = useRouter();
+  const [isSignUp, setIsSignUp] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsSignUp(window.location.pathname.includes('signup'));
+  }, []);
 
   async function onSubmit(data: z.infer<typeof userAuthSchema>) {
     setIsLoading(true);
-    // Mock authentication
-    setTimeout(() => {
-      setIsLoading(false);
+
+    if (!auth) {
+        toast({ variant: "destructive", title: "Error", description: "Firebase not initialized."});
+        setIsLoading(false);
+        return;
+    }
+
+    try {
+      if (isSignUp) {
+        await createUserWithEmailAndPassword(auth, data.email, data.password);
+      } else {
+        await signInWithEmailAndPassword(auth, data.email, data.password);
+      }
+      router.push("/dashboard");
+    } catch (error: any) {
       toast({
-        title: "Check your email",
-        description: "We sent you a login link. Be sure to check your spam too.",
+        variant: "destructive",
+        title: "Authentication Error",
+        description: error.message,
       });
-    }, 1000);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    if (!auth) {
+        toast({ variant: "destructive", title: "Error", description: "Firebase not initialized."});
+        return;
+    }
+    setIsGoogleLoading(true);
+    try {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+        router.push("/dashboard");
+    } catch (error: any) {
+        toast({
+            variant: "destructive",
+            title: "Google Sign-In Error",
+            description: error.message,
+          });
+    } finally {
+        setIsGoogleLoading(false);
+    }
   }
 
   return (
@@ -108,7 +158,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 ></path>
               </svg>
             )}
-            Sign In with Email
+            {isSignUp ? "Sign Up" : "Sign In"} with Email
           </Button>
         </div>
       </form>
@@ -126,7 +176,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         variant="outline"
         type="button"
         disabled={isLoading || isGoogleLoading}
-        onClick={() => setIsGoogleLoading(true)}
+        onClick={handleGoogleSignIn}
       >
         {isGoogleLoading ? (
           <svg

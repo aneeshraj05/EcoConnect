@@ -1,3 +1,5 @@
+'use client';
+import React from "react";
 import {
   Card,
   CardContent,
@@ -8,21 +10,38 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { placeholderImages } from "@/lib/placeholder-images";
-import TripPlannerClient from "@/components/planner/trip-planner-client";
 import { aiPoweredRecommendations } from "@/ai/flows/ai-powered-recommendations-flow";
 import PlaceCard from "@/components/place-card";
+import { useUser } from "@/firebase";
+import { Skeleton } from "@/components/ui/skeleton";
 
-async function Recommendations() {
-  // Mock user data for recommendations
-  const recommendations = await aiPoweredRecommendations({
-    viewingHistory: ["Vivekananda Rock Memorial"],
-    preferences: ["beach", "historical"],
-  });
+function Recommendations({ viewingHistory, preferences }: { viewingHistory: string[], preferences: string[] }) {
+  const [recommendations, setRecommendations] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    async function getRecs() {
+      const recs = await aiPoweredRecommendations({
+        viewingHistory,
+        preferences,
+      });
+      setRecommendations(recs);
+    }
+    getRecs();
+  }, [viewingHistory, preferences]);
+
+  if (!recommendations) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Skeleton className="h-80" />
+        <Skeleton className="h-80" />
+        <Skeleton className="h-80" />
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {recommendations.recommendations.map((rec) => {
+      {recommendations.recommendations.map((rec: any) => {
         const place = {
           id: rec.name.toLowerCase().replace(/ /g, '-'),
           name: rec.name,
@@ -37,21 +56,30 @@ async function Recommendations() {
 }
 
 export default function DashboardPage() {
-  const userAvatar = placeholderImages.find((p) => p.id === "user-avatar-1");
+  const { user, isLoading } = useUser();
 
   return (
     <div className="space-y-10">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Welcome, Alex!</h1>
-          <p className="text-muted-foreground">
-            Here&apos;s your personal travel dashboard.
-          </p>
+          {isLoading ? (
+            <div className="space-y-2">
+              <Skeleton className="h-9 w-48" />
+              <Skeleton className="h-5 w-64" />
+            </div>
+          ) : (
+            <>
+              <h1 className="text-3xl font-bold">Welcome, {user?.displayName || 'Explorer'}!</h1>
+              <p className="text-muted-foreground">
+                Here&apos;s your personal travel dashboard.
+              </p>
+            </>
+          )}
         </div>
         <div className="flex items-center gap-4">
           <Avatar className="h-12 w-12">
-            {userAvatar && <AvatarImage src={userAvatar.imageUrl} alt="User Avatar" />}
-            <AvatarFallback>A</AvatarFallback>
+            {user?.photoURL && <AvatarImage src={user.photoURL} alt="User Avatar" />}
+            <AvatarFallback>{user?.displayName?.charAt(0) || 'A'}</AvatarFallback>
           </Avatar>
         </div>
       </div>
@@ -73,7 +101,7 @@ export default function DashboardPage() {
       
       <section>
         <h2 className="text-2xl font-bold mb-4">Personalized Recommendations</h2>
-        <Recommendations />
+        <Recommendations viewingHistory={["Vivekananda Rock Memorial"]} preferences={["beach", "historical"]} />
       </section>
 
       <section>
