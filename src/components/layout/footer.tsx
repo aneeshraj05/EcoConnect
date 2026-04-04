@@ -9,7 +9,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold flex items-center">
               <Icons.logo className="h-5 w-5 mr-2 text-primary"/>
-              KanyaGuide
+              EcoConnect
             </h3>
             <p className="mt-2 text-sm text-muted-foreground">
               Your travel companion for Kanyakumari.
@@ -63,7 +63,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t pt-4 text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} KanyaGuide. All rights reserved.
+          © {new Date().getFullYear()} EcoConnect. All rights reserved.
         </div>
       </div>
     </footer>

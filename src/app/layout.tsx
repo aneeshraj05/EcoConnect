@@ -8,7 +8,7 @@ import Footer from '@/components/layout/footer';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 export const metadata: Metadata = {
-  title: 'KanyaGuide - Smart Tourism for Kanyakumari',
+  title: 'EcoConnect - Smart Tourism for Kanyakumari',
   description: 'Your ultimate guide to exploring the beauty and culture of Kanyakumari. Find places, book stays, and discover local experiences.',
   manifest: '/manifest.ts'
 };

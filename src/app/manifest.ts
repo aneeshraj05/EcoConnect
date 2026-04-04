@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next'
  
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'KanyaGuide - Smart Tourism for Kanyakumari',
-    short_name: 'KanyaGuide',
+    name: 'EcoConnect - Smart Tourism for Kanyakumari',
+    short_name: 'EcoConnect',
     description: 'Your ultimate guide to exploring the beauty and culture of Kanyakumari.',
     start_url: '/',
     display: 'standalone',

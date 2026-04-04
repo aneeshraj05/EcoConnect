@@ -81,7 +81,7 @@ export default function Header() {
           <Link href="/" className="flex items-center space-x-2">
             <Icons.logo className="h-6 w-6 text-primary" />
             <span className="font-bold hidden sm:inline-block">
-              KanyaGuide
+              EcoConnect
             </span>
           </Link>
         </div>
@@ -112,7 +112,7 @@ export default function Header() {
               <div className="px-1 py-6">
                 <Link href="/" className="flex items-center space-x-2 mb-8">
                   <Icons.logo className="h-6 w-6 text-primary" />
-                  <span className="font-bold">KanyaGuide</span>
+                  <span className="font-bold">EcoConnect</span>
                 </Link>
                 <div className="flex flex-col space-y-4">
                   {mainNav.map((item) => (

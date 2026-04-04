@@ -1,8 +1,8 @@
-import { Compass, type LucideProps } from "lucide-react";
+import { Leaf, type LucideProps } from "lucide-react";
 import type { SVGProps } from "react";
 
 export const Icons = {
-  logo: (props: LucideProps) => <Compass {...props} />,
+  logo: (props: LucideProps) => <Leaf {...props} />,
   google: (props: SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" {...props}>
       <path
