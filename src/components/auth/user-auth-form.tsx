@@ -8,6 +8,7 @@ import * as z from "zod";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 
 import { cn } from "@/lib/utils";
@@ -55,7 +56,10 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
     try {
       if (isSignUp) {
-        await createUserWithEmailAndPassword(auth, data.email, data.password);
+        const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+        await updateProfile(userCredential.user, {
+            displayName: data.email.split('@')[0],
+        });
       } else {
         await signInWithEmailAndPassword(auth, data.email, data.password);
       }

@@ -13,7 +13,6 @@ export async function generateItineraryAction(
     const output = await aiGeneratedTripItinerary(input);
     return output;
   } catch (error) {
-    console.error("Error generating itinerary:", error);
     return { error: "Failed to generate itinerary. Please try again." };
   }
 }

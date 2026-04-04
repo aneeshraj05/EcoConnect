@@ -10,8 +10,6 @@ export function FirebaseErrorListener() {
 
   useEffect(() => {
     const handlePermissionError = (error: FirestorePermissionError) => {
-      console.error(error); // Log the full contextual error for developers
-      
       toast({
         variant: 'destructive',
         title: 'Permission Denied',
