@@ -18,6 +18,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { doc, setDoc } from 'firebase/firestore';
 import { toast } from '@/hooks/use-toast';
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError } from "@/firebase/errors";
 
 const profileSchema = z.object({
     displayName: z.string().min(2, "Name must be at least 2 characters."),
@@ -38,26 +40,31 @@ export default function SettingsPage() {
         }
     }, [user, setValue]);
 
-    const onSubmit = async (data: { displayName: string }) => {
+    const onSubmit = (data: { displayName: string }) => {
         if (!user || !firestore) return;
         
         setIsSaving(true);
-        try {
-            const userRef = doc(firestore, `users/${user.uid}`);
-            await setDoc(userRef, { displayName: data.displayName }, { merge: true });
-            toast({
-                title: "Profile updated",
-                description: "Your display name has been updated.",
+        const userRef = doc(firestore, `users/${user.uid}`);
+        const profileData = { displayName: data.displayName };
+
+        setDoc(userRef, profileData, { merge: true })
+            .then(() => {
+                toast({
+                    title: "Profile updated",
+                    description: "Your display name has been updated.",
+                });
+            })
+            .catch((error: any) => {
+                const permissionError = new FirestorePermissionError({
+                    path: userRef.path,
+                    operation: 'update',
+                    requestResourceData: profileData,
+                });
+                errorEmitter.emit('permission-error', permissionError);
+            })
+            .finally(() => {
+                setIsSaving(false);
             });
-        } catch (error: any) {
-            toast({
-                variant: "destructive",
-                title: "Error",
-                description: "Could not update profile.",
-            });
-        } finally {
-            setIsSaving(false);
-        }
     };
     
   if (isUserLoading) {

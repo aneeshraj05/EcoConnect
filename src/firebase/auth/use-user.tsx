@@ -5,6 +5,8 @@ import { onAuthStateChanged, type User } from 'firebase/auth';
 import { useAuth } from '../provider';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useFirestore } from '../provider';
+import { errorEmitter } from '../error-emitter';
+import { FirestorePermissionError } from '../errors';
 
 export const useUser = () => {
   const auth = useAuth();
@@ -27,15 +29,20 @@ export const useUser = () => {
           // Create user profile in Firestore if it doesn't exist
           const { email, photoURL } = userAuth;
           const displayName = userAuth.displayName || (email ? email.split('@')[0] : 'New User');
-          try {
-            await setDoc(userRef, {
-              displayName,
-              email,
-              photoURL,
+          const userData = {
+            displayName,
+            email,
+            photoURL,
+          };
+          setDoc(userRef, userData)
+            .catch((e) => {
+              const permissionError = new FirestorePermissionError({
+                path: userRef.path,
+                operation: 'create',
+                requestResourceData: userData,
+              });
+              errorEmitter.emit('permission-error', permissionError);
             });
-          } catch(e) {
-            console.error("Failed to create user document", e)
-          }
         }
         setUser(userAuth);
       } else {
