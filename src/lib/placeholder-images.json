@@ -1,3 +1,88 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-kanyakumari",
+      "description": "A beautiful sunset view of Kanyakumari with Vivekananda Rock Memorial and Thiruvalluvar Statue.",
+      "imageUrl": "https://picsum.photos/seed/kanyakumari-hero/1920/1080",
+      "imageHint": "Kanyakumari sunset"
+    },
+    {
+      "id": "vivekananda-rock",
+      "description": "The Vivekananda Rock Memorial island in the sea.",
+      "imageUrl": "https://picsum.photos/seed/vivekananda/600/400",
+      "imageHint": "rock memorial"
+    },
+    {
+      "id": "thiruvalluvar-statue",
+      "description": "The towering statue of Thiruvalluvar, a famous Tamil poet.",
+      "imageUrl": "https://picsum.photos/seed/thiruvalluvar/600/400",
+      "imageHint": "stone statue"
+    },
+    {
+      "id": "kanyakumari-beach",
+      "description": "The sandy shores of Kanyakumari beach during sunrise.",
+      "imageUrl": "https://picsum.photos/seed/kanyabeach/600/400",
+      "imageHint": "beach sunrise"
+    },
+    {
+      "id": "gandhi-mandapam",
+      "description": "The Gandhi Memorial Mandapam with its unique architecture.",
+      "imageUrl": "https://picsum.photos/seed/gandhi/600/400",
+      "imageHint": "pink temple"
+    },
+    {
+      "id": "local-craft",
+      "description": "A local artisan creating crafts from seashells.",
+      "imageUrl": "https://picsum.photos/seed/localcraft/600/400",
+      "imageHint": "seashell crafts"
+    },
+    {
+      "id": "boating-experience",
+      "description": "Tourists enjoying a boat ride near the memorials.",
+      "imageUrl": "https://picsum.photos/seed/boating/600/400",
+      "imageHint": "tourist boat"
+    },
+    {
+      "id": "local-food",
+      "description": "A traditional South Indian meal served on a banana leaf.",
+      "imageUrl": "https://picsum.photos/seed/localfood/600/400",
+      "imageHint": "indian food"
+    },
+    {
+      "id": "vattakottai-fort",
+      "description": "The historic Vattakottai Fort overlooking the sea.",
+      "imageUrl": "https://picsum.photos/seed/vattakottai/600/400",
+      "imageHint": "coastal fort"
+    },
+    {
+      "id": "padmanabhapuram-palace",
+      "description": "The intricate wooden architecture of Padmanabhapuram Palace.",
+      "imageUrl": "https://picsum.photos/seed/palace/600/400",
+      "imageHint": "wooden palace"
+    },
+    {
+      "id": "hotel-sea-view",
+      "description": "A modern hotel room with a view of the ocean.",
+      "imageUrl": "https://picsum.photos/seed/hotel1/600/400",
+      "imageHint": "hotel room"
+    },
+    {
+      "id": "homestay-traditional",
+      "description": "A cozy room in a traditional Kanyakumari homestay.",
+      "imageUrl": "https://picsum.photos/seed/homestay1/600/400",
+      "imageHint": "cozy room"
+    },
+    {
+      "id": "user-avatar-1",
+      "description": "Avatar for a user.",
+      "imageUrl": "https://picsum.photos/seed/avatar1/100/100",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "user-avatar-2",
+      "description": "Avatar for another user.",
+      "imageUrl": "https://picsum.photos/seed/avatar2/100/100",
+      "imageHint": "woman portrait"
+    }
+  ]
 }
