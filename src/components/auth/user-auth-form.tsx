@@ -1,15 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
 } from "firebase/auth";
 
 import { cn } from "@/lib/utils";
@@ -17,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import { Icons } from "../icons";
 import { useAuth } from "@/firebase";
 
 const userAuthSchema = z.object({
@@ -36,14 +33,15 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     resolver: zodResolver(userAuthSchema),
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [isGoogleLoading, setIsGoogleLoading] = React.useState<boolean>(false);
   
   const auth = useAuth();
   const router = useRouter();
   const [isSignUp, setIsSignUp] = React.useState(false);
 
   React.useEffect(() => {
-    setIsSignUp(window.location.pathname.includes('signup'));
+    if (typeof window !== "undefined") {
+      setIsSignUp(window.location.pathname.includes('signup'));
+    }
   }, []);
 
   async function onSubmit(data: z.infer<typeof userAuthSchema>) {
@@ -73,27 +71,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     }
   }
 
-  async function handleGoogleSignIn() {
-    if (!auth) {
-        toast({ variant: "destructive", title: "Error", description: "Firebase not initialized."});
-        return;
-    }
-    setIsGoogleLoading(true);
-    try {
-        const provider = new GoogleAuthProvider();
-        await signInWithPopup(auth, provider);
-        router.push("/dashboard");
-    } catch (error: any) {
-        toast({
-            variant: "destructive",
-            title: "Google Sign-In Error",
-            description: error.message,
-          });
-    } finally {
-        setIsGoogleLoading(false);
-    }
-  }
-
   return (
     <div className={cn("grid gap-6", className)} {...props}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -109,7 +86,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              disabled={isLoading || isGoogleLoading}
+              disabled={isLoading}
               {...register("email")}
             />
             {errors?.email && (
@@ -126,7 +103,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               id="password"
               placeholder="Password"
               type="password"
-              disabled={isLoading || isGoogleLoading}
+              disabled={isLoading}
               {...register("password")}
             />
             {errors?.password && (
@@ -158,52 +135,10 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 ></path>
               </svg>
             )}
-            {isSignUp ? "Sign Up" : "Sign In"} with Email
+            {isSignUp ? "Sign Up" : "Sign In"}
           </Button>
         </div>
       </form>
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
-        </div>
-      </div>
-      <Button
-        variant="outline"
-        type="button"
-        disabled={isLoading || isGoogleLoading}
-        onClick={handleGoogleSignIn}
-      >
-        {isGoogleLoading ? (
-          <svg
-            className="mr-2 h-4 w-4 animate-spin"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-        ) : (
-          <Icons.google className="mr-2 h-4 w-4" />
-        )}{" "}
-        Google
-      </Button>
     </div>
   );
 }

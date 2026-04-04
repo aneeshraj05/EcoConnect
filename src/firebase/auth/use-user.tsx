@@ -25,7 +25,8 @@ export const useUser = () => {
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) {
           // Create user profile in Firestore if it doesn't exist
-          const { displayName, email, photoURL } = userAuth;
+          const { email, photoURL } = userAuth;
+          const displayName = userAuth.displayName || (email ? email.split('@')[0] : 'New User');
           try {
             await setDoc(userRef, {
               displayName,
