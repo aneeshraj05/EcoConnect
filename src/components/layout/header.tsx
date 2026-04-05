@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const mainNav = [
   { title: "Explore", href: "/explore" },
   { title: "Experiences", href: "/experiences" },
+  { title: "Travel Assistance", href: "/travel-assistance" },
   { title: "Trip Planner", href: "/trip-planner" },
 ];
 

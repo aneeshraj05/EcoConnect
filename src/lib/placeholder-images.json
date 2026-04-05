@@ -83,6 +83,24 @@
       "description": "Avatar for another user.",
       "imageUrl": "https://picsum.photos/seed/avatar2/100/100",
       "imageHint": "woman portrait"
+    },
+    {
+      "id": "beachside-resort",
+      "description": "A luxury resort with a swimming pool and ocean view.",
+      "imageUrl": "https://picsum.photos/seed/resortpool/600/400",
+      "imageHint": "resort pool"
+    },
+    {
+      "id": "budget-lodge",
+      "description": "A simple and clean room in a budget lodge.",
+      "imageUrl": "https://picsum.photos/seed/budgetlodge/600/400",
+      "imageHint": "simple room"
+    },
+    {
+      "id": "trivandrum-city",
+      "description": "A view of the city of Trivandrum.",
+      "imageUrl": "https://picsum.photos/seed/trivandrum/1200/600",
+      "imageHint": "city view"
     }
   ]
 }

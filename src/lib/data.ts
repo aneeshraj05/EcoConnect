@@ -8,6 +8,16 @@ export type Place = {
   imageId: string;
 };
 
+export type BusRoute = {
+  id: string;
+  origin: string;
+  destination: string;
+  departureTime: string;
+  arrivalTime: string;
+  fare: number;
+  operator: string;
+};
+
 export const featuredPlaces: Place[] = [
   {
     id: 'vivekananda-rock',
@@ -60,6 +70,14 @@ export const allPlaces: Place[] = [
     rating: 4.7,
     category: 'Attraction',
     imageId: 'padmanabhapuram-palace'
+  },
+  {
+    id: 'trivandrum-city',
+    name: 'Trivandrum',
+    description: 'The capital city of Kerala, known for its British colonial architecture and many art galleries.',
+    rating: 4.5,
+    category: 'Attraction',
+    imageId: 'trivandrum-city'
   }
 ];
 
@@ -113,7 +131,35 @@ export const accommodations: Place[] = [
     category: 'Stay',
     imageId: 'homestay-traditional'
   },
+  {
+    id: 'beachside-resort',
+    name: 'Beachside Resort & Spa',
+    description: 'A premium resort with a private beach area, swimming pool, and spa services.',
+    rating: 4.9,
+    price: 8000,
+    category: 'Stay',
+    imageId: 'beachside-resort'
+  },
+  {
+    id: 'budget-lodge',
+    name: 'Kanyakumari Budget Lodge',
+    description: 'A clean and affordable lodge located in the heart of the city, perfect for budget travelers.',
+    rating: 3.9,
+    price: 1200,
+    category: 'Stay',
+    imageId: 'budget-lodge'
+  }
 ];
+
+export const busRoutes: BusRoute[] = [
+  { id: 'bus-1', origin: 'Kanyakumari', destination: 'Trivandrum', departureTime: '08:00 AM', arrivalTime: '10:30 AM', fare: 150, operator: 'KSRTC' },
+  { id: 'bus-2', origin: 'Trivandrum', destination: 'Kanyakumari', departureTime: '02:00 PM', arrivalTime: '04:30 PM', fare: 150, operator: 'KSRTC' },
+  { id: 'bus-3', origin: 'Kanyakumari', destination: 'Madurai', departureTime: '09:30 AM', arrivalTime: '02:00 PM', fare: 300, operator: 'SETC' },
+  { id: 'bus-4', origin: 'Madurai', destination: 'Kanyakumari', departureTime: '05:00 PM', arrivalTime: '09:30 PM', fare: 300, operator: 'SETC' },
+  { id: 'bus-5', origin: 'Kanyakumari', destination: 'Tirunelveli', departureTime: '07:00 AM', arrivalTime: '09:00 AM', fare: 100, operator: 'TNSTC' },
+  { id: 'bus-6', origin: 'Tirunelveli', destination: 'Kanyakumari', departureTime: '06:00 PM', arrivalTime: '08:00 PM', fare: 100, operator: 'TNSTC' },
+];
+
 
 export const dashboardNavItems = [
   {
