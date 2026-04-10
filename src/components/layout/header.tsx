@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import {
@@ -21,16 +22,8 @@ const mainNav = [
   { title: "Trip Planner", href: "/trip-planner" },
 ];
 
-
-function UserNavButtons() {
+function UserNavButtons({ handleSignOut }: { handleSignOut: () => Promise<void> }) {
     const { user, isLoading } = useUser();
-    const auth = useAuth();
-  
-    const handleSignOut = async () => {
-        if(auth) {
-            await signOut(auth);
-        }
-    };
   
     if (isLoading) {
       return <div className="h-9 w-24 rounded-md animate-pulse bg-muted" />;
@@ -68,10 +61,12 @@ function UserNavButtons() {
 export default function Header() {
     const { user } = useUser();
     const auth = useAuth();
+    const router = useRouter();
 
     const handleSignOut = async () => {
         if(auth) {
             await signOut(auth);
+            router.push('/');
         }
     };
 
@@ -99,7 +94,7 @@ export default function Header() {
         </nav>
         <div className="flex flex-1 items-center justify-end gap-2">
           <div className="hidden md:flex">
-            <UserNavButtons />
+            <UserNavButtons handleSignOut={handleSignOut} />
           </div>
           <ThemeToggle />
           <Sheet>
