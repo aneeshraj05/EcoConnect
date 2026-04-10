@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -24,25 +25,33 @@ export const useUser = () => {
       if (userAuth) {
         // User is signed in
         const userRef = doc(firestore, `users/${userAuth.uid}`);
-        const userSnap = await getDoc(userRef);
-        if (!userSnap.exists()) {
-          // Create user profile in Firestore if it doesn't exist
-          const { email, photoURL } = userAuth;
-          const displayName = userAuth.displayName || (email ? email.split('@')[0] : 'New User');
-          const userData = {
-            displayName,
-            email,
-            photoURL,
-          };
-          setDoc(userRef, userData)
-            .catch((e) => {
-              const permissionError = new FirestorePermissionError({
+        try {
+            const userSnap = await getDoc(userRef);
+            if (!userSnap.exists()) {
+              // Create user profile in Firestore if it doesn't exist
+              const { email, photoURL } = userAuth;
+              const displayName = userAuth.displayName || (email ? email.split('@')[0] : 'New User');
+              const userData = {
+                displayName,
+                email,
+                photoURL,
+              };
+              setDoc(userRef, userData)
+                .catch((e) => {
+                  const permissionError = new FirestorePermissionError({
+                    path: userRef.path,
+                    operation: 'create',
+                    requestResourceData: userData,
+                  });
+                  errorEmitter.emit('permission-error', permissionError);
+                });
+            }
+        } catch (error) {
+            const permissionError = new FirestorePermissionError({
                 path: userRef.path,
-                operation: 'create',
-                requestResourceData: userData,
-              });
-              errorEmitter.emit('permission-error', permissionError);
+                operation: 'get',
             });
+            errorEmitter.emit('permission-error', permissionError);
         }
         setUser(userAuth);
       } else {
