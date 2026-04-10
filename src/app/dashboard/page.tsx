@@ -14,28 +14,63 @@ import { aiPoweredRecommendations } from "@/ai/flows/ai-powered-recommendations-
 import PlaceCard from "@/components/place-card";
 import { useUser } from "@/firebase";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
 
 function Recommendations({ viewingHistory, preferences }: { viewingHistory: string[], preferences: string[] }) {
   const [recommendations, setRecommendations] = React.useState<any>(null);
+  const [error, setError] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     async function getRecs() {
-      const recs = await aiPoweredRecommendations({
-        viewingHistory,
-        preferences,
-      });
-      setRecommendations(recs);
+      setIsLoading(true);
+      setError(null);
+      try {
+        const recs = await aiPoweredRecommendations({
+          viewingHistory,
+          preferences,
+        });
+        setRecommendations(recs);
+      } catch (e) {
+        console.error(e);
+        setError("We couldn't fetch recommendations at this time. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
     }
     getRecs();
   }, [viewingHistory, preferences]);
 
-  if (!recommendations) {
+  if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Skeleton className="h-80" />
         <Skeleton className="h-80" />
         <Skeleton className="h-80" />
       </div>
+    );
+  }
+
+  if (error) {
+    return (
+        <Alert variant="destructive">
+            <Terminal className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+                {error}
+            </AlertDescription>
+        </Alert>
+    )
+  }
+
+  if (!recommendations || recommendations.recommendations.length === 0) {
+    return (
+        <Card>
+            <CardContent className="pt-6">
+                <p className="text-muted-foreground">No recommendations available at the moment.</p>
+            </CardContent>
+        </Card>
     );
   }
 
